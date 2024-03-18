@@ -1,7 +1,17 @@
 /*
  * Program Name: influenzaModel.cpp
  * Summary: This program uses multithreading and parallel calculations
- *			to simulate the progress of a flu outbreak on a human population.
+ *	    to simulate the progress of a zombie outbreak on a human population.
+ *          The program uses a modified SIR epidemiology model to make these
+ *          predictions, here called a SIInZD model for:
+ *              (S)usceptible
+ *              (I)mune
+ *              (In)fected
+ *              (Z)ombies
+ *              (D)ead
+ *          This model was originally designed by Austin Hourigan in his excellent
+ *          video "The SCIENCE! Behind the Zombie Apocalypse"
+ *          URL: https://www.youtube.com/watch?v=VdO4_C9LGFA
  * Programmer: Sean B. Higgins
  * Start Date: September 15, 2023
  */
