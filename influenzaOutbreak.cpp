@@ -235,6 +235,19 @@ int main(int argc, char* argv[]) {
                 errno = 0;      // Distinguish between a success and a failure.
                 str = argv[++i];    // Store the pointer that holds the number value
                                     // to convert.
+
+                // IMPORTANT: If the user didn't actually provide an argument after
+                // one of the argument flags, that will result in str being given a
+                // nullptr. If we try to run strtol() or strtod() on a nullptr, we
+                // get a segfault. 
+                if (str == nullptr) {
+                    fprintf(stderr, "Error: No argument was provided for option flag \"%s\".\n", argv[--i]);
+                    fprintf(stderr, "Usage: %s [-s susceptible] [-i infected] [-a rate-of-infection] [-r rate-of-recovery]\n",
+                        argv[0]);
+                    exit(EXIT_FAILURE);
+ 
+                }
+                
                 switch (c) {
                     case 's':   // -s: Initial susceptible value. Value must be a
                                 // whole positive integer.
@@ -359,7 +372,7 @@ int main(int argc, char* argv[]) {
                     default:    // If the provided argument flag is invalid, print a
                                 // message explaining the flag is invalid. Then print
                                 // the usage message.
-                        fprintf(stderr, "Error: The provided flag of %s is invalid.\n", argv[--i]);
+                        fprintf(stderr, "Error: The provided flag of \"%s\" is invalid.\n", argv[--i]);
                         fprintf(stderr, "Usage: %s [-s susceptible] [-i infected] [-a rate-of-infection] [-r rate-of-recovery]\n",
                                  argv[0]);
                         exit(EXIT_FAILURE);
