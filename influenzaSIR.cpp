@@ -1,8 +1,8 @@
 /*
- * Program Name: influenzaModel.cpp
+ * Program Name: influenzaSIR.cpp
  * Summary: This program uses multithreading and parallel calculations
- *			to simulate the progress of a flu outbreak on a human population
- *                      using the SIR epidemiology model.
+ *          to simulate the progress of a flu outbreak on a human population
+ *          using the SIR epidemiology model.
  * Programmer: Sean B. Higgins
  * Start Date: September 15, 2023
  */
@@ -11,7 +11,6 @@
 #include <limits.h>
 #include <stdio.h>
 #define _USE_MATH_DEFINES
-#include <math.h>
 #include <stdlib.h>
 #include <time.h>
 #include <omp.h>
@@ -57,21 +56,6 @@ long CurrentRecovered = 0;
 double InfectionRate = 0.4;
 // Rate of recovery for the common cold.
 double RecoveryRate = 0.04;
-
-
-// For use with calculating the Carrying Capacity
-double Sqr( double x )
-{
-    return x*x;
-}
-
-// Seed the random number function.
-unsigned int seed = 0;
-
-float Randf(unsigned int *seedp, float low, float high) {
-    float r = (float) rand_r(seedp);
-    return (low + r*(high - low) / (float)RAND_MAX);
-}
 
 
 // This function calculates how many (or rather, how few) susceptible humans
