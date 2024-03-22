@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 #include <omp.h>
 
 // print debugging messages?
@@ -79,7 +80,7 @@ void Susceptible() {
 
         // Subtract the number of new infections based on the current number
         // of infected individuals.
-        nextSusceptible -= CurrentInfected * INFECTION_RATE;
+        nextSusceptible -= round(CurrentInfected * INFECTION_RATE);
 
         // We can't have a negative population
         if( nextSusceptible < 0 )
@@ -111,8 +112,8 @@ void Infected() {
 
         // Add the new number of infected indivuduals and subtract
         // the number of recovered individuals.
-        nextInfected += (CurrentSusceptible * INFECTION_RATE);
-        nextInfected -= (CurrentInfected * RECOVERY_RATE);
+        nextInfected += round(CurrentSusceptible * INFECTION_RATE);
+        nextInfected -= round(CurrentInfected * RECOVERY_RATE);
 	
         // We still cannot have a negative population
         if (nextInfected < 0)
@@ -141,7 +142,7 @@ void Recovered() {
         // Compute a temporary next-value for the number of recovered individuals
         // based on the current number of infected individuals.
 	
-	nextRecovered += (CurrentInfected * RECOVERY_RATE);
+	nextRecovered += round(CurrentInfected * RECOVERY_RATE);
 	
         // DoneComputing barrier: Save the calculated variables to the
         // global variables.

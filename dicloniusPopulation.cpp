@@ -60,39 +60,37 @@ const float BIRTH_RATE_QUEENS = 7.013;
 // uninfected humans. We also need to calculate how many people have become
 // infected with the Vector Virus, thus making them Carriers.
 void Humans() {
-	int nextHumans;
-	
-	while( NowYear < EndYear ) {
-		// compute a temporary next-value for this quantity
-		// based on the current state of the simulation:
-		nextHumans = CurrentHumans;
+    int nextHumans;
 
-		// Calculate the population of uninfected humans.
-		// Subtract the number of new infections based on the current number
-		// of infected individuals.
-		// Add the number of new uninfected human babies based on the current
-		// population of uninfected humans.
-		nextHumans += (CurrentHumans/1000 * BIRTH_RATE_HUMANS/12) - (CurrentQueens + CurrentSilphalets) * INFECTION_RATE;
-		
-		// We can't have a negative population
-		if( nextHumans < 0 )
-			nextHumans = 0;
-		
-		// DoneComputing barrier:
-		#pragma omp barrier
-		
-		// Store the newly calculated population value after all the parallel functions
-		// have finished their own calculatons.
-		CurrentHumans = nextHumans;
+    while( NowYear < EndYear ) {
+	// compute a temporary next-value for this quantity
+	// based on the current state of the simulation:
+    	nextHumans = CurrentHumans;
 
-		// DoneAssigning barrier:
-		#pragma omp barrier
-		
+    	// Calculate the population of uninfected humans.
+    	// Subtract the number of new infections based on the current number
+    	// of infected individuals.
+    	// Add the number of new uninfected human babies based on the current
+    	// population of uninfected humans.
+    	nextHumans += (CurrentHumans/1000 * BIRTH_RATE_HUMANS/12) - (CurrentQueens + CurrentSilphalets) * INFECTION_RATE;
 
-		// DonePrinting barrier:
-		#pragma omp barrier
+	// We can't have a negative population
+	if( nextHumans < 0 )
+            nextHumans = 0;
 		
-	}
+	// DoneComputing barrier:
+    	#pragma omp barrier
+		
+    	// Store the newly calculated population value after all the parallel functions
+    	// have finished their own calculatons.
+    	CurrentHumans = nextHumans;
+
+    	// DoneAssigning barrier:
+    	#pragma omp barrier	
+
+    	// DonePrinting barrier:
+    	#pragma omp barrier
+    }
 }
 
 // This function calculates the number of infected individuals there will be
@@ -100,31 +98,29 @@ void Humans() {
 // uninfected humans available to be infected, as well as the number of
 // Queens and Silphalets around to spread the Vector Virus.
 void Carriers() {
-	int nextCarriers;
+    int nextCarriers;
+
+    while( NowYear < EndYear ) {
+    	// compute a temporary next-value for this quantity
+    	// based on the current state of the simulation:
+    	nextCarriers = CurrentCarriers;
+
+        // Add the new number of infected indivuduals and subtract
+    	// the number of recovered individuals.
+    	nextCarriers += (CurrentQueens + CurrentSilphalets) * INFECTION_RATE;
+
+    	// DoneComputing barrier:
+    	#pragma omp barrier
 	
-	while( NowYear < EndYear ) {
-		// compute a temporary next-value for this quantity
-		// based on the current state of the simulation:
-		nextCarriers = CurrentCarriers;
-		
+    	// Store the newly calculated value for the next generation of the simulation.
+    	CurrentCarriers = nextCarriers;
 
-		// Add the new number of infected indivuduals and subtract
-		// the number of recovered individuals.
-		nextCarriers += (CurrentQueens + CurrentSilphalets) * INFECTION_RATE;
+    	// DoneAssigning barrier:
+    	#pragma omp barrier	
 
-		// DoneComputing barrier:
-		#pragma omp barrier
-		
-		// Store the newly calculated value for the next generation of the simulation.
-		CurrentCarriers = nextCarriers;
-
-		// DoneAssigning barrier:
-		#pragma omp barrier
-		
-
-		// DonePrinting barrier:
-		#pragma omp barrier
-	}
+    	// DonePrinting barrier:
+    	#pragma omp barrier
+    }
 }
 
 
@@ -135,28 +131,25 @@ void Carriers() {
 // the current Queen population, as well as the current male population (uninfected humans
 // and carriers).
 void Queens() {
-	int nextQueens = CurrentQueens;
+    int nextQueens = CurrentQueens;
 	
-	while( NowYear < EndYear ) {
-		// Compute a temporary next-value for the number of recovered individuals
-		// based on the current number of infected individuals.
+    while( NowYear < EndYear ) {
+    	// Compute a temporary next-value for the number of recovered individuals
+    	// based on the current number of infected individuals.
+		
+    	nextQueens += ((CurrentQueens + CurrentHumans/2 + CurrentCarriers/2)/1000) * BIRTH_RATE_QUEENS/12;
 
+    	// DoneComputing barrier: Save the calculated variables to the global variables.
+    	#pragma omp barrier
 		
-		nextQueens += ((CurrentQueens + CurrentHumans/2 + CurrentCarriers/2)/1000) * BIRTH_RATE_QUEENS/12;
-		
-		// DoneComputing barrier: Save the calculated variables to the global variables.
-		#pragma omp barrier
-		
-		CurrentQueens = nextQueens;
+    	CurrentQueens = nextQueens;
 
-		// DoneAssigning barrier:
-		#pragma omp barrier
-		
+    	// DoneAssigning barrier:
+    	#pragma omp barrier
 
-		// DonePrinting barrier:
-		#pragma omp barrier
-		
-	}
+    	// DonePrinting barrier:
+    	#pragma omp barrier		
+    }
 }
 
 
@@ -164,126 +157,117 @@ void Queens() {
 // Silphalets are sterile, so the population of Silphalets depends on the number of carriers
 // and uninfected humans.
 void Silphalets() {
-	int nextSilphalets = CurrentSilphalets;
+    int nextSilphalets = CurrentSilphalets;
 	
-	while( NowYear < EndYear ) {
-		// Compute a temporary next-value for the number of recovered individuals
-		// based on the current number of infected individuals.
+    while( NowYear < EndYear ) {
+    	// Compute a temporary next-value for the number of recovered individuals
+    	// based on the current number of infected individuals.
+		
+    	nextSilphalets += ((CurrentHumans + CurrentCarriers)/1000) * BIRTH_RATE_SILPHALETS/12;
+		
+    	// DoneComputing barrier: Save the calculated variables to the global variables.
+    	#pragma omp barrier
+		
+    	CurrentSilphalets = nextSilphalets;
 
+    	// DoneAssigning barrier:
+    	#pragma omp barrier
 		
-		nextSilphalets += ((CurrentHumans + CurrentCarriers)/1000) * BIRTH_RATE_SILPHALETS/12;
-		
-		// DoneComputing barrier: Save the calculated variables to the global variables.
-		#pragma omp barrier
-		
-		CurrentSilphalets = nextSilphalets;
-
-		// DoneAssigning barrier:
-		#pragma omp barrier
-		
-
-		// DonePrinting barrier:
-		#pragma omp barrier
-		
-	}
+    	// DonePrinting barrier:
+    	#pragma omp barrier		
+    }
 }
 
 // This function adjusts the global variables for the program.
 void Watcher() {
-	int tempMonth;
-	int tempYear;	
+    int tempMonth;
+    int tempYear;
+
+    while( NowYear < EndYear ) {
+    	// DoneComputing barrier:
+    	#pragma omp barrier
+
+    	// DoneAssigning barrier:
+    	#pragma omp barrier
+		
+    	// Print the current values for the simulation.
+    	#ifdef CSV
+            // Calculate the current month number for graphing purposes.
+            int yearDiff = NowYear - StartYear;
+            int addMonths = 12*yearDiff;
+            int printMonth = NowMonth+addMonths;
+
+            fprintf(stderr, "%2d, %d, %d, %d, %d\n",
+                printMonth, CurrentHumans, CurrentCarriers, CurrentQueens, CurrentSilphalets);
+        #else
+            fprintf(stderr, "Year %4d, Month %2d - Uninfected Humans: %d, Carriers: %d, Diclonius Queens: %d, Silphalets: %d\n",
+                NowYear, NowMonth+1, CurrentHumans, CurrentCarriers, CurrentQueens, CurrentSilphalets);
+	#endif
+
+    	// Compute a temporary next-value for this quantity
+    	// based on the current state of the simulation:
+    	tempYear = NowYear;
+    	tempMonth = NowMonth + 1;
 	
-	while( NowYear < EndYear ) {
-
-		// DoneComputing barrier:
-		#pragma omp barrier
-
-
-		// DoneAssigning barrier:
-		#pragma omp barrier
-		
-		// Print the current values for the simulation.
-		#ifdef CSV
-			// Calculate the current month number for graphing purposes.
-			int yearDiff = NowYear - StartYear;
-			int addMonths = 12*yearDiff;
-			int printMonth = NowMonth+addMonths;
-			
-			fprintf(stderr, "%2d, %d, %d, %d, %d\n",
-					printMonth, CurrentHumans, CurrentCarriers, CurrentQueens, CurrentSilphalets);
-		#else
-			fprintf(stderr, "Year %4d, Month %2d - Uninfected Humans: %d, Carriers: %d, Diclonius Queens: %d, Silphalets: %d\n",
-					NowYear, NowMonth+1, CurrentHumans, CurrentCarriers, CurrentQueens, CurrentSilphalets);
-		#endif
-		
-		// Compute a temporary next-value for this quantity
-		// based on the current state of the simulation:
-		tempYear = NowYear;
-		tempMonth = NowMonth + 1;
-		
-		if (tempMonth > 11) {
-			tempMonth = 0;
-			tempYear++;
-		}
-		
-		// Store the new environment variables for the simulation.
-		NowMonth = tempMonth;
-		NowYear = tempYear;
-		
-		// DonePrinting barrier:
-		#pragma omp barrier
-	}
+    	if (tempMonth > 11) {
+            tempMonth = 0;
+	    tempYear++;
+        }
+	
+	// Store the new environment variables for the simulation.
+        NowMonth = tempMonth;
+        NowYear = tempYear;
+	
+    	// DonePrinting barrier:
+    	#pragma omp barrier
+    }
 }
 
 // The main loop of the program.
 int main(int argc, char* argv[]) {
+    // Accept input values from the command line for this simulation.
+    if (argc == 5) {
+        CurrentHumans = atoi(argv[1]);
+        CurrentCarriers = atoi(argv[2]);
+        CurrentQueens = atoi(argv[3]);
+        CurrentSilphalets = atoi(argv[4]);
+    } else {
+        fprintf(stderr, "No command-line arguments provided for %s.\nRunning the program using default values:\n\
+            \tHumans = %d\n\
+            \tCarriers = %d\n\
+            \tQueens = %d\n\
+            \tSilphalets = %d\n\n",\
+            CurrentHumans, CurrentCarriers, CurrentQueens, CurrentSilphalets);
+    }
 
-        // Accept input values from the command line for this simulation.
-        if (argc == 5) {
-            CurrentHumans = atoi(argv[1]);
-            CurrentCarriers = atoi(argv[2]);
-            CurrentQueens = atoi(argv[3]);
-            CurrentSilphalets = atoi(argv[4]);
-        }
-        else {
-            fprintf(stderr, "No command-line arguments provided for %s.\nRunning the\
-                    program using default values:\n\
-                    \tHumans = %d\n\
-                    \tCarriers = %d\n\
-                    \tQueens = %d\n\
-                    \tSilphalets = %d\n\n",\
-                    CurrentHumans, CurrentCarriers, CurrentQueens,\
-                    CurrentSilphalets);
-        }
-
-	omp_set_num_threads(NUMT);	// same as # of sections
-	#pragma omp parallel sections
+    omp_set_num_threads(NUMT);	// same as # of sections
+    #pragma omp parallel sections
+    {
+    	#pragma omp section
 	{
-		#pragma omp section
-		{
-			Humans();
-		}
+            Humans();
+        }
 
-		#pragma omp section
-		{
-			Carriers();
-		}
-		
-		#pragma omp section
-		{
-			Queens();
-		}
-		
-		#pragma omp section
-		{
-			Silphalets();
-		}
-		
-		#pragma omp section
-		{
-			Watcher();
-		}
-		
-	}   // implied barrier -- all functions must return in order
-		// to allow any of them to get past here
+    	#pragma omp section
+    	{
+            Carriers();
+        }
+	
+    	#pragma omp section
+    	{
+            Queens();
+    	}
+
+    	#pragma omp section
+    	{
+	    Silphalets();
+    	}
+
+        #pragma omp section
+    	{
+    	    Watcher();
+    	}
+
+    }   // implied barrier -- all functions must return in order
+	// to allow any of them to get past here
 }

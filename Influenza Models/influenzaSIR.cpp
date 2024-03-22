@@ -72,7 +72,7 @@ void Susceptible() {
         // IMPORTANT: While it is mathematically correct to find the change in
         //            the Susceptible population by multiplying
         //            CurrentSusceptible *
-    	nextSusceptible -= nearbyint(CurrentSusceptible * InfectionRate);
+    	nextSusceptible -= round(CurrentSusceptible * InfectionRate);
 	
         // We can't have a negative population
     	if( nextSusceptible < 0 )
@@ -104,8 +104,8 @@ void Infected() {
 
     	// Add the new number of infected indivuduals and subtract
         // the number of recovered individuals.
-        nextInfected += nearbyint(CurrentSusceptible * InfectionRate);
-        nextInfected -= nearbyint(CurrentInfected * RecoveryRate);
+        nextInfected += round(CurrentSusceptible * InfectionRate);
+        nextInfected -= round(CurrentInfected * RecoveryRate);
 
     	// We still cannot have a negative population
 	if (nextInfected < 0)
@@ -134,7 +134,7 @@ void Recovered() {
 	// Compute a temporary next-value for the number of recovered individuals
         // based on the current number of infected individuals.
 
-    	nextRecovered += nearbyint(CurrentInfected * RecoveryRate);
+    	nextRecovered += round(CurrentInfected * RecoveryRate);
 		
     	// DoneComputing barrier: Save the calculated variables to the
     	// global variables.
