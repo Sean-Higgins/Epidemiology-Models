@@ -15,6 +15,9 @@
 #include <time.h>
 #include <omp.h>
 
+#include "influenzaSIR.h"
+
+
 // print debugging messages?
 //#define DEBUG
 

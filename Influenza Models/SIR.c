@@ -32,7 +32,6 @@ static double InfectionRate;
 static double RecoveryRate;
 
 
-
 // This function calculates how many (or rather, how few) susceptible humans
 // there will be for the next generation of the simulation. This rate of
 // decrease is proportional to the current population zombies.
