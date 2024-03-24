@@ -24,6 +24,11 @@
 
 //#define CSV
 
+// Since the below variables are shared between influenzaSIR.cpp and SIR.c,
+// we need to declare them as extern variable so that they can be used in all the
+// files that make up this program. The variables are declared here in the header
+// file, are assigned their default values in the SIR.c file, and can be accessed
+// and changed in the influenzaSIR.cpp file.
 
 // Year and month for the simulation to keep track of.
 extern int NowYear;	    // [START_YEAR, END_YEAR]

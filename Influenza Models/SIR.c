@@ -5,6 +5,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "influenzaSIR.h"
 
 // Define other values to be used that might be adjusted
