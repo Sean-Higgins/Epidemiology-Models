@@ -16,25 +16,26 @@
 // Thus, they are declared here, but they are not initialized.
 
 // Year and month for the simulation to keep track of.
-static int NowYear;	// [START_YEAR, END_YEAR]
-static int NowMonth;			// [0, 11]
+int NowYear = START_YEAR;	// [START_YEAR, END_YEAR]
+int NowMonth = 0;			// [0, 11]
 
 // Starting number of susceptible people, infected people, and recovered people.
-static long CurrentInfected;
-static long CurrentSusceptible;   // - CurrentInfected; The CurrentInfected is
-                                    // subtracted in main
-static long CurrentRecovered;
+long CurrentInfected = 10;
+long CurrentSusceptible = 175000;
+long CurrentRecovered = 0;
 
-// Transfer rates for the zombie outbreak model.
+// Transfer rates for the SIR model.
 // Rate of infection for the common cold.
-static double InfectionRate;
+double InfectionRate = 0.4;
 // Rate of recovery for the common cold.
-static double RecoveryRate;
+double RecoveryRate = 0.04;
 
 
-// This function calculates how many (or rather, how few) susceptible humans
-// there will be for the next generation of the simulation. This rate of
-// decrease is proportional to the current population zombies.
+/* Susceptible: This function is executed by a thread in parallel with the
+ *              Infected(), Recovered(), and Watcher() functions. It serves
+ *              to calculate the next value of the Susceptible population,
+ *              as the Susceptible become Infected.
+ */
 void Susceptible() {
     long nextSusceptible;
 
@@ -66,10 +67,11 @@ void Susceptible() {
     }
 }
 
-// This function calculates the number of infected individuals there will be
-// for the next generation of the simulation. This depends on the number of
-// susceptible individuals available to be infected, as well as the number of
-// infected individuals that have recovered.
+/* Infected: This function calculates the number of infected individuals there
+ *			 will be for the next generation of the simulation. This depends on
+ *			 the number of susceptible individuals available to be infected, as
+ *			 well as the number of infected individuals that have recovered.
+ */
 void Infected() {
     long nextInfected;
 	
@@ -100,9 +102,10 @@ void Infected() {
 }
 
 
-// This function calculates the number of individuals who have recovered from
-// their flu infection. This depends on the number of people who are currently
-// infected.
+/* Recovered: This function calculates the number of individuals who have
+ *			  recovered from their flu infection. This depends on the number
+ *			  of people who are currently infected.
+ */
 void Recovered() {
     long nextRecovered = CurrentRecovered;
 
@@ -125,7 +128,7 @@ void Recovered() {
     }
 }
 
-// This function adjusts the global variables for the program.
+// Watcher: This function adjusts the global variables for the program.
 void Watcher() {
     int tempMonth;
     int tempYear;
@@ -176,4 +179,3 @@ void Watcher() {
 	#pragma omp barrier
     }
 }
-
