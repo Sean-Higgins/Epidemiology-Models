@@ -1,0 +1,9 @@
+# .gitignore file.
+
+# Ignore test programs
+strtol_ex.c
+
+# Ignore the compiled debug and release directories, and their files, for all
+# projects.
+*/debug*
+*/release*
