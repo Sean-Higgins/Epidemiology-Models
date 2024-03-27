@@ -18,26 +18,6 @@
 #include "influenzaSIR.h"
 
 
-// print debugging messages?
-//#define DEBUG
-
-// setting the number of threads:
-#ifndef NUMT
-#define NUMT    4
-#endif
-
-
-// Define the start and end year for the simulation.
-#ifndef START_YEAR
-#define START_YEAR  2023
-#endif
-
-#ifndef END_YEAR
-#define END_YEAR    2025
-#endif
-
-//#define CSV
-
 // The main loop of the program.
 int main(int argc, char* argv[]) {
     // Gather the initial values (if any) from the command-line
