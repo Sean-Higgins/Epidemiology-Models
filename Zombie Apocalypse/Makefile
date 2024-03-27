@@ -3,7 +3,7 @@
 
 .PHONY: all clean prep debug release
 
-EXE := influenza
+EXE := zombieOutbreak
 
 # Debug directory and executable
 DBGDIR := debug
@@ -24,10 +24,10 @@ prep:
 
 
 # Compile the debug version of the code
-debug: prep influenzaSIR.cpp inputParsing.c SIR.c influenzaSIR.h
-	g++ -DDEBUG -g -fopenmp -lm influenzaSIR.cpp inputParsing.c SIR.c -o $(DBGEXE)
+debug: prep zombieSIInZD.cpp inputParsing.c SIInZD.c zombieSIInZD.h
+	g++ -DDEBUG -g -fopenmp -lm zombieSIInZD.cpp inputParsing.c SIInZD.c -o $(DBGEXE)
 
 
 # Compile the release version of the program without any debugging features.
-release: prep influenzaSIR.cpp inputParsing.c SIR.c influenzaSIR.h
-	g++ -fopenmp -lm influenzaSIR.cpp inputParsing.c SIR.c -o $(RELEXE)
+release: prep zombieSIInZD.cpp inputParsing.c SIInZD.c zombieSIInZD.h
+	g++ -fopenmp -lm zombieSIInZD.cpp inputParsing.c SIInZD.c -o $(RELEXE)

@@ -47,8 +47,10 @@ extern long CurrentDead;
 extern double InfectionRate;
 // Rate of zombification for infected individuals
 extern double ZombieRate;
-// Rate of zobies being killed by Susceptible, Infected, and the Immune
-extern double ZombieDeaths;
+// Rate of Susceptible, Infected, and Immune individuals being killed by Zombies
+extern double DeathRate;
+// Rate of Zombies being killed by Susceptible, Infected, and Immune individuals
+extern double ZombieDeathRate;
 
 
 
