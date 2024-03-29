@@ -3,6 +3,9 @@
  * Summary: This program uses multithreading and parallel calculations
  *          to simulate the progress of a flu outbreak on a human population
  *          using the SIR epidemiology model.
+ *              (S)usceptible
+ *              (I)nfected
+ *              (R)ecovered
  * Programmer: Sean B. Higgins
  * Start Date: September 15, 2023
  */
