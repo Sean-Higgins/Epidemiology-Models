@@ -1,12 +1,12 @@
 /*
  * SIInZD.c - This file stores all of the differential functions that are used
- *	      with the functional multiprocessing method to produce our SIInDZ model.
+ *	      	  with the functional multiprocessing method to produce our SIInDZ model.
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "zombieSIInZD.h"
+#include "SIInZD.h"
 
 // Define other values to be used that might be adjusted
 // for the flu outbreak. The current values are equivalent

@@ -1,7 +1,7 @@
 /*
- * zombieSIInDZ.h - A header file for the zombieSIInDZ.cpp program
- *                  to store the declarations and definitions of the most
- *                  important funcations and variables for the program.
+ * SIInDZ.h - A header file for the zombieSIInDZ.cpp program
+ *            to store the declarations and definitions of the most
+ *            important funcations and variables for the program.
  */
 
 // print debugging messages?

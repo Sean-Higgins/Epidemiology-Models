@@ -24,10 +24,10 @@ prep:
 
 
 # Compile the debug version of the code
-debug: prep zombieSIInZD.cpp inputParsing.c SIInZD.c zombieSIInZD.h
-	g++ -DDEBUG -g -fopenmp -lm zombieSIInZD.cpp inputParsing.c SIInZD.c -o $(DBGEXE)
+debug: prep SIInZD.cpp inputParsing.c SIInZD.c SIInZD.h
+	g++ -DDEBUG -g -fopenmp -lm SIInZD.cpp inputParsing.c SIInZD.c -o $(DBGEXE)
 
 
 # Compile the release version of the program without any debugging features.
-release: prep zombieSIInZD.cpp inputParsing.c SIInZD.c zombieSIInZD.h
-	g++ -fopenmp -lm zombieSIInZD.cpp inputParsing.c SIInZD.c -o $(RELEXE)
+release: prep SIInZD.cpp inputParsing.c SIInZD.c SIInZD.h
+	g++ -fopenmp -lm SIInZD.cpp inputParsing.c SIInZD.c -o $(RELEXE)

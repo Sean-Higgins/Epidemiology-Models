@@ -1,5 +1,5 @@
 /*
- * Program Name: zombieSIInZD.cpp
+ * Program Name: SIInZD.cpp
  * Summary: This program uses multithreading and parallel calculations
  *	    to simulate the progress of a zombie outbreak on a human population.
  *          The program uses a modified SIR epidemiology model to make these
