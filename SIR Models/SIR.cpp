@@ -1,5 +1,5 @@
 /*
- * Program Name: influenzaSIR.cpp
+ * Program Name: SIR.cpp
  * Summary: This program uses multithreading and parallel calculations
  *          to simulate the progress of a flu outbreak on a human population
  *          using the SIR epidemiology model.
@@ -18,7 +18,7 @@
 #include <time.h>
 #include <omp.h>
 
-#include "influenzaSIR.h"
+#include "SIR.h"
 
 
 // The main loop of the program.

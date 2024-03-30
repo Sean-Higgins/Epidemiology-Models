@@ -1,7 +1,7 @@
 /*
- * influenzaSIR.h - A header file for the influenzaSIR.cpp program
- *                  to store the declarations and definitions of the most
- *                  important funcations and variables for the program.
+ * SIR.h - A header file for the influenzaSIR.cpp program
+ *         to store the declarations and definitions of the most
+ *         important funcations and variables for the program.
  */
 
 // print debugging messages?

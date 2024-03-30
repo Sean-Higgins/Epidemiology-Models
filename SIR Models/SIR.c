@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "influenzaSIR.h"
+#include "SIR.h"
 
 // Define other values to be used that might be adjusted
 // for the flu outbreak. The current values are equivalent
