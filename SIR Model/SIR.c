@@ -50,7 +50,7 @@ void Susceptible() {
         // IMPORTANT: While it is mathematically correct to find the change in
         //            the Susceptible population by multiplying
         //            CurrentSusceptible *
-    	nextSusceptible -= round(CurrentSusceptible * CurrentInfected * InfectionRate);
+    	nextSusceptible -= round(CurrentSusceptible * InfectionRate);
 	
         // We can't have a negative population
     	if( nextSusceptible < 0 )
@@ -83,7 +83,7 @@ void Infected() {
 
     	// Add the new number of infected indivuduals and subtract
         // the number of recovered individuals.
-        nextInfected += round(CurrentSusceptible * CurrentInfected * InfectionRate);
+        nextInfected += round(CurrentSusceptible * InfectionRate);
         nextInfected -= round(CurrentInfected * RecoveryRate);
 
     	// We still cannot have a negative population
