@@ -20,17 +20,17 @@
 int NowYear = START_YEAR;	// [START_YEAR, END_YEAR]
 int NowMonth = 0;			// [0, 11]
 
-// Starting number of susceptible people, quarantined people, exposed people, infected people, and recovered people.
+// Starting populations for all of the groups in the model.
 long CurrentSusceptible = 175000;
 long CurrentQuarantined = 0;
-long CurrentExposed = 0;
+long CurrentExposed = 100;
 long CurrentInfected = 10;
 long CurrentRecovered = 0;
 
-// Transfer rates for the SIR model.
-// Rate of infection for the common cold.
+// Transfer rates for the SQEIR model.
+// Rate of infection for COVID-19.
 double InfectionRate = 0.4;
-// Rate of recovery for the common cold.
+// Rate of recovery for COVID-19.
 double RecoveryRate = 0.04;
 
 
