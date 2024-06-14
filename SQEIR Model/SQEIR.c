@@ -185,7 +185,7 @@ void Recovered() {
     long nextRecovered = CurrentRecovered;
 
     while( NowYear < END_YEAR ) {
-	// Compute a temporary next-value for the number of recovered individuals
+		// Compute a temporary next-value for the number of recovered individuals
         // based on the current number of infected individuals.
 
     	nextRecovered += round(CurrentInfected * RecoveryRate);
@@ -223,12 +223,12 @@ void Watcher() {
         int addMonths = 12*yearDiff;
         int printMonth = NowMonth+addMonths;
 
-        fprintf(stderr, "%2d, %ld, %ld, %ld\n",
-                printMonth, CurrentSusceptible, CurrentInfected, CurrentRecovered);
+        fprintf(stderr, "%2d, %ld, %ld, %ld, %ld, %ld\n",
+                printMonth, CurrentSusceptible, CurrentQuarantined, CurrentExposed, CurrentInfected, CurrentRecovered);
 
 #else
-        fprintf(stderr, "Year %4d, Month %2d - Susceptible: %6ld, Infected: %6ld, Recovered: %6ld\n",
-                NowYear, NowMonth+1, CurrentSusceptible, CurrentInfected, CurrentRecovered);
+        fprintf(stderr, "Year %4d, Month %2d - Susceptible: %6ld, Quarantiened: %6ld, Exposed: %6ld, Infected: %6ld, Recovered: %6ld\n",
+                NowYear, NowMonth+1, CurrentSusceptible, CurrentQuarantined, CurrentExposed, CurrentInfected, CurrentRecovered);
 #endif
 
 #ifdef DEBUG
@@ -238,16 +238,16 @@ void Watcher() {
 
 	// Compute a temporary next-value for this quantity
 	// based on the current state of the simulation:
-        tempYear = NowYear;
+    tempYear = NowYear;
 	tempMonth = NowMonth + 1;
 
 	if (tempMonth > 11) {
-            tempMonth = 0;
+        tempMonth = 0;
 	    tempYear++;
-        }
+    }
 
-        // Store the new environment variables for the simulation.
-        NowMonth = tempMonth;
+    // Store the new environment variables for the simulation.
+    NowMonth = tempMonth;
 	NowYear = tempYear;
 
 	// DonePrinting barrier:

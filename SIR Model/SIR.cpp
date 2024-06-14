@@ -10,19 +10,87 @@
  * Start Date: September 15, 2023
  */
 
+// Implementing a matrix-vector multpiplication method to perform the
+
 #include <errno.h>
 #include <limits.h>
+#include <math.h>
+#include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <time.h>
-#include <omp.h>
+
+
+// Extra header files for OpenCL implementation.
+#include <string.h>
+#include <ctime>
+#include <sys/time.h>
+#include <sys/source.h>
 
 #include "SIR.h"
+#include "cl.h"
+#include "cl_platform.h"
 
+// The matrix-width and the number of work-items per work group:
+// Note: The matrices are actually MATWxMATW and work-group sizes
+//       are LOCALSIZExLOCALSIZE.
+
+#ifndef MATW
+#define MATW    3   // Number of variables to calculate
+#endif
+
+#ifndef LOCALSIZE
+#define LOCALSIZE   8
+#endif
+
+// OpenCL Objects:
+cl_platform_id      Platform;
+cl_device_id        Device;
+cl_kernel           Kernel;
+cl_program          Program;
+cl_context          Context;
+cl_command_queue    CmdQueue;
+
+// Do we want to output the values in csv format?
+//#define CSV
+
+// Prepare the host matrix and vectors for calculating the linear system of equations:
+// Ax = b.
+long            hA[MATW][MATW];
+long            hx[MATW];
+long            hb[MATW];
+
+// Open the OpenCL file that has the function for matrix-vector multiplication.
+const char *    CL_FILE_NAME = {"MatrixVectorMult.cl"};
+
+// Function prototypes.
+void            SelectOpenclDevice();
+char *          Vendor(cl_uint);
+char *          Type(cl_device_type);
+void            Wait(cl_command_queue);
 
 // The main loop of the program.
 int main(int argc, char* argv[]) {
+#ifndef _OPENMP
+    fprintf(stderr, "OpenMP is not enabled! Exiting program!\n");
+    return 1;
+#endif
+
+    // Attempt to open the OpenCL kernel program. There's no point continuing if we can't
+    FILE *fp;
+
+#ifdef WIN32
+    errno_t err = fopen_s( &fp, CL_FILE_NAME, "r");
+    if (err != 0)
+#else
+    fp1 = fopen(CL_FILE_NAME, "r");
+    if (fp == NULL)
+#endif
+    {
+        fprintf(stderr, "Cannot open OpenCL source file '%s'\n", CL_FILE_NAME);
+        return 1;
+    }
+
     // Gather the initial values (if any) from the command-line
     // If command-line arguments are provided, they are parsed in with
     // the appropriate flags:
