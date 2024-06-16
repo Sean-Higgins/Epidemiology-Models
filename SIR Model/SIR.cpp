@@ -378,6 +378,107 @@ int main(int argc, char* argv[]) {
     size_t globalWorkSize[3] = {MATW,  MATW,   1};
     size_t localWorkSize[3]  = {LOCALSIZE, LOCALSIZE, 1};
 
+#ifndef CSV
+	fprintf( stderr, "MatrixVectorMult\n");
+	fprintf( stderr, "Number of Work Groups = %5d x %5d\n", MATW/LOCALSIZE, MATW/LOCALSIZE );
+#endif
+
+    Wait(CmdQueue);
+
+    double time0 = omp_get_wtime();
+
+    status = clEnqueueNDRangeKernel(CmdQueue, Kernel, 2, NULL, globalWorkSize, localWorkSize, 0, NULL, NULL);
+    if (status != CL_SUCCESS)
+        fprintf(stderr, "clEnqueueNDRangeKernel failed: %d\n", status);
+    
+    Wait(CmdQueue);
+    double time1 = omp_get_wtime();
+
+    // 12. Read the results buffer back from the device to the host:
+    status = clEnqueueReadBuffer(CmdQueue, db, CL_FALSE, 0, bSize, hb, 0, NULL, NULL);
+    if (status != CL_SUCCESS)
+        fprintf(stderr, "clEnqueueReadBuffer failed\n");
+    
+    Wait (CmdQueue);
+
+#ifdef CSV
+	fprintf( stderr, "%8d , %6d , %10.2lf, %12.2f\n",
+		MATW*MATW, LOCALSIZE*LOCALSIZE, (double)MATW*(double)MATW*(double)MATW/(time1-time0)/1000000000., hb[MATW-1] );
+#else
+	fprintf( stderr, "Matrix Vector Multiplication Results");								// For MatrixMult, dC[MATW-1][MATW-1] = 2.0
+	fprintf( stderr, "Matrix Size: %6d x %6d , Vector Size: %6d x 1, Work Elements: %4d x %4d , GigaMultsPerSecond: %10.2lf, db[%6d][0] = %12.2f\n",
+		MATW, MATW, MATW, LOCALSIZE, LOCALSIZE, (double)MATW*(double)MATW*(double)MATW/(time1-time0)/1000000000., MATW-1, hb[MATW-1] );
+#endif
+
+
+    // 9. Create the kernel object (for VectorAdd):
+
+    // Create a Kernel for the VectorAdd function.
+    Kernel = clCreateKernel(Program, "VectorAdd", &status);
+    if (status != CL_SUCCESS)
+        fprintf(stderr, "clCreateKernel failed for VectorAdd\n");
+    
+    // 10. Setup the arguments to the kernel object:
+
+    // Passing the dx vector arguments to the kernal object.
+    status = clSetKernelArg(Kernel, 0, sizeof(cl_mem), &du);
+    if (status != CL_SUCCESS)
+        fprintf(stderr, "clSetKernelArg failed for dx (%d)\n", status);
+    
+
+    // Passing the db vector arguments to the kernal object.
+    status = clSetKernelArg(Kernel, 1, sizeof(cl_mem), &dv);
+    if (status != CL_SUCCESS)
+        fprintf(stderr, "clSetKernelArg failed for db (%d)\n", status);
+
+    // Passing the dVR vector height arguments to the kernal object.
+    status = clSetKernelArg(Kernel, 2, sizeof(cl_mem), &dVR);
+    if (status != CL_SUCCESS)
+        fprintf(stderr, "clSetKernelArg failed for dMW (%d)\n", status);
+
+    // Passing the dx vector (return) arguments to the kernal object.
+    status = clSetKernelArg(Kernel, 3, sizeof(cl_mem), &dw);
+    if (status != CL_SUCCESS)
+        fprintf(stderr, "clSetKernelArg failed for dx (%d)\n", status);
+
+    // 11. Enqueue the kernel object for execution
+    size_t globalWorkSize[3] = {MATW,  MATW,   1};
+    size_t localWorkSize[3]  = {LOCALSIZE, LOCALSIZE, 1};
+
+#ifndef CSV
+	fprintf( stderr, "VectorAdd\n");
+	fprintf( stderr, "Number of Work Groups = %5d x %5d\n", MATW/LOCALSIZE, MATW/LOCALSIZE );
+#endif
+
+    Wait(CmdQueue);
+
+    double time0 = omp_get_wtime();
+
+    status = clEnqueueNDRangeKernel(CmdQueue, Kernel, 2, NULL, globalWorkSize, localWorkSize, 0, NULL, NULL);
+    if (status != CL_SUCCESS)
+        fprintf(stderr, "clEnqueueNDRangeKernel failed: %d\n", status);
+    
+    Wait(CmdQueue);
+    double time1 = omp_get_wtime();
+
+    // 12. Read the results buffer back from the device to the host:
+    status = clEnqueueReadBuffer(CmdQueue, dw, CL_FALSE, 0, bSize, hx, 0, NULL, NULL);
+    if (status != CL_SUCCESS)
+        fprintf(stderr, "clEnqueueReadBuffer failed\n");
+    
+    Wait (CmdQueue);
+
+#ifdef CSV
+	fprintf( stderr, "%8d , %6d , %10.2lf, %12.2f\n",
+		MATW*MATW, LOCALSIZE*LOCALSIZE, (double)MATW*(double)MATW*(double)MATW/(time1-time0)/1000000000., hb[MATW-1] );
+#else
+	fprintf( stderr, "Vector Addition Results\n");
+	fprintf( stderr, "Vector Size: %6d x 1, Work Elements: %4d x %4d , GigaMultsPerSecond: %10.2lf, dw[%6d][0] = %12.2f\n",
+		MATW, LOCALSIZE, LOCALSIZE, (double)MATW*(double)MATW*(double)MATW/(time1-time0)/1000000000., MATW-1, hx[MATW-1] );
+#endif
+
+
+
 
 
     omp_set_num_threads(NUMT);	// same as # of sections
