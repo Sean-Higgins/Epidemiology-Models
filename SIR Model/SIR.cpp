@@ -23,7 +23,6 @@
 
 #include "SIR.h"
 
-
 // The main loop of the program.
 int main(int argc, char* argv[]) {
     // Gather the initial values (if any) from the command-line
