@@ -1,6 +1,6 @@
 /*
  * SQEIR.h - A header file for the SQEIR.cpp program to store
- *	     the declarations and definitions of the most
+ *	         the declarations and definitions of the most
  *           important funcations and variables for the program.
  */
 
@@ -34,7 +34,7 @@
 extern int NowYear;	    // [START_YEAR, END_YEAR]
 extern int NowMonth;	// [0, 11]
 
-// Starting number of susceptible people, infected people, and recovered people.
+// Starting population of each group in the SQEIR epidemic model.
 extern long CurrentSusceptible;
 extern long CurrentQuarantined;
 extern long CurrentExposed;
@@ -66,7 +66,7 @@ void parseLong(long* long_val, char* str);
 void parseDouble(double* double_val, char* str);
 
 
-// Function prototypes for the functions stored in the SIR.c file.
+// Function prototypes for the functions stored in the SQEIR.c file.
 void Susceptible();
 void Quarantined();
 void Exposed();

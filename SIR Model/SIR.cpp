@@ -10,13 +10,16 @@
  * Start Date: September 15, 2023
  */
 
+// Implementing a matrix-vector multpiplication method to perform the calculations
+// for this epidemiological model.
+
 #include <errno.h>
 #include <limits.h>
+#include <math.h>
+#include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <time.h>
-#include <omp.h>
 
 #include "SIR.h"
 
@@ -26,7 +29,6 @@ int main(int argc, char* argv[]) {
     // Gather the initial values (if any) from the command-line
     // If command-line arguments are provided, they are parsed in with
     // the appropriate flags:
-    //  -
     if (argc >= 2) {
         // Parse all of the provided arguments and their values.
         // IMPORTANT: We also need to handle error cases where a user
@@ -121,23 +123,23 @@ int main(int argc, char* argv[]) {
     {
         #pragma omp section
         {
-	    Susceptible();
+	        Susceptible();
         }
 
-	#pragma omp section
-	{
+        #pragma omp section
+        {
             Infected();
-	}
+        }
 		
-	#pragma omp section
-	{
+        #pragma omp section
+        {
             Recovered();
-	}
+        }
 		
-	#pragma omp section
-	{
+        #pragma omp section
+        {
             Watcher();
-	}
+        }
 		
     }   // implied barrier -- all functions must return in order
 	// to allow any of them to get past here

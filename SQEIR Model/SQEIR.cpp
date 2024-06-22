@@ -1,13 +1,24 @@
 /*
- * Program Name: influenzaSIR.cpp
+ * Program Name: SQEIR.cpp
  * Summary: This program uses multithreading and parallel calculations
- *          to simulate the progress of a flu outbreak on a human population
- *          using the SIR epidemiology model.
+ *          to simulate the progress of any bacterial or viral outbreak
+ *          on a human population, making sure to take into account
+ *          the incubation state of the desease, high transmission potential,
+ *          and quarantine measures to reduce the spread of the disease. Taking
+ *          these extra requirements into consideration, we can thus derive a new
+ *          epidemiological model: the SQEIR model. The relevent components are as
+ *          listed below:
  *              (S)usceptible
+ *              (Q)uarantined
+ *              (E)xposed
  *              (I)nfected
  *              (R)ecovered
+ *          This model was first introduced, as far as I am aware, as a way to model
+ *          the spread of the COVID-19 virus in the research paper "SQEIR: An epidemic
+ *          virus spread analysis and prediction model"
+ *          URL: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9364756/
  * Programmer: Sean B. Higgins
- * Start Date: September 15, 2023
+ * Start Date: March 30, 2024
  */
 
 #include <errno.h>
@@ -119,25 +130,36 @@ int main(int argc, char* argv[]) {
     omp_set_num_threads(NUMT);	// same as # of sections
     #pragma omp parallel sections
     {
+    
         #pragma omp section
         {
-	    Susceptible();
+            Susceptible();
         }
 
-	#pragma omp section
-	{
+        #pragma omp section
+        {
+            Quarantined();
+        }
+
+        #pragma omp section
+        {
+            Exposed();
+        }
+
+        #pragma omp section
+        {
             Infected();
-	}
+        }
 		
-	#pragma omp section
-	{
+        #pragma omp section
+        {
             Recovered();
-	}
+        }
 		
-	#pragma omp section
-	{
+        #pragma omp section
+        {
             Watcher();
-	}
+        }
 		
     }   // implied barrier -- all functions must return in order
 	// to allow any of them to get past here
