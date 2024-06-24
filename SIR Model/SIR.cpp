@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
     if (argc >= 2) {
         // Parse all of the provided arguments and their values.
         // IMPORTANT: We also need to handle error cases where a user
-        // forgets to inter a value (e.g., ./influenzaOutbreak -s)
+        // forgets to enter a value (e.g., ./influenzaOutbreak -s)
         // This leaves argv[argc-1] as the flag, and the final argv[argc] as NULL.
 
         // Iterate through the argument vector to locate the flags.
@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
                 // get a segfault. 
                 if (str == nullptr) {
                     fprintf(stderr, "Error: No argument was provided for option flag \"%s\".\n", argv[--i]);
-                    fprintf(stderr, "Usage: %s [-s susceptible] [-i infected] [-b rate-of-infection] [-g rate-of-recovery]\n",
+                    fprintf(stderr, "Usage: %s [-s susceptible] [-i infected] [-b rate-of-infection] [-g rate-of-recovery] [-y num-years]\n",
                         argv[0]);
                     exit(EXIT_FAILURE);
  
@@ -77,11 +77,15 @@ int main(int argc, char* argv[]) {
                                 // Must be a non-negative value.
                         parseDouble(&RecoveryRate, str);
                         break;
+		    case 'y':	// -y: Number of years to run the simulation.
+				// Must be a non-negative value.
+			parseInt(&NumYears, str);
+			break;
                     default:    // If the provided argument flag is invalid, print a
                                 // message explaining the flag is invalid. Then print
                                 // the usage message.
                         fprintf(stderr, "Error: The provided flag of \"%s\" is invalid.\n", argv[--i]);
-                        fprintf(stderr, "Usage: %s [-s susceptible] [-i infected] [-b rate-of-infection] [-g rate-of-recovery]\n",
+                        fprintf(stderr, "Usage: %s [-s susceptible] [-i infected] [-b rate-of-infection] [-g rate-of-recovery] [-y num-years]\n",
                                  argv[0]);
                         exit(EXIT_FAILURE);
                 }
@@ -98,8 +102,7 @@ int main(int argc, char* argv[]) {
     // population values.
 #ifdef CSV
     // Calculate the current month number for graphing purposes.
-    int yearDiff = NowYear - START_YEAR;
-    int addMonths = 12*yearDiff;
+    int addMonths = 12*NowYear;
     int printMonth = NowMonth+addMonths;
 
     fprintf(stderr, "%2d, %ld, %ld, %ld\n", printMonth, CurrentSusceptible, CurrentInfected, CurrentRecovered);
@@ -122,7 +125,7 @@ int main(int argc, char* argv[]) {
     {
         #pragma omp section
         {
-	        Susceptible();
+	    Susceptible();
         }
 
         #pragma omp section

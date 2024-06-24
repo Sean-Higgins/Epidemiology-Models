@@ -14,12 +14,8 @@
 
 
 // Define the start and end year for the simulation.
-#ifndef START_YEAR
-#define START_YEAR  2023
-#endif
-
-#ifndef END_YEAR
-#define END_YEAR    2025
+#ifndef NUM_YEARS
+#define NUM_YEARS  2
 #endif
 
 //#define CSV
@@ -30,9 +26,12 @@
 // file, are assigned their default values in the SIR.c file, and can be accessed
 // and changed in the influenzaSIR.cpp file.
 
+
 // Year and month for the simulation to keep track of.
-extern int NowYear;	    // [START_YEAR, END_YEAR]
-extern int NowMonth;	// [0, 11]
+extern int NowYear;	    // [0, NumYears]
+extern int NumYears;
+extern int NowMonth;	    // [0, 11]
+
 
 // Starting number of susceptible people, infected people, and recovered people.
 extern long CurrentInfected;
@@ -41,6 +40,7 @@ extern long CurrentRecovered;
 
 extern double InfectionRate;
 extern double RecoveryRate;
+
 
 // parseLong: This function serves as a wrapper for the function strtol(),
 //            ensuring that the provided character string str produces
@@ -51,6 +51,17 @@ extern double RecoveryRate;
 //      char* str:      The string that holds the numeric data to convert to a
 //                      long integer
 void parseLong(long* long_val, char* str);
+
+
+// parseInt: This is a wrapper function for the parseLong function that includes
+//	     a check to make sure that the provided value will fit into an integer
+//	     value.
+//  Input:
+//	int* int_val: A pointer to the variable where we will store the converted
+//		      str value.
+//	char* str:    The string that holds the numeric data to convert to an
+//		      integer.
+void parseInt(int* int_val, char* str);
 
 
 // parseDouble: This function serves as a wrapper for the function strtod(),
