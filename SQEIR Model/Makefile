@@ -16,7 +16,7 @@ all: prep debug release
 
 # Clean up any previous builds
 clean:
-	rm -rf debug/ release/
+	rm -rf $(DBGDIR) $(RELDIR)
 
 # Prepare by creating the debug and release directories
 prep:

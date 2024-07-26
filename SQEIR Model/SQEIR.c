@@ -17,7 +17,8 @@
 // Thus, they are declared here, but they are not initialized.
 
 // Year and month for the simulation to keep track of.
-int NowYear = START_YEAR;	// [START_YEAR, END_YEAR]
+int NowYear = 0;	// [START_YEAR, END_YEAR]
+int NumYears = NUM_YEARS;
 int NowMonth = 0;			// [0, 11]
 
 // Starting populations for all of the groups in the model.
@@ -42,7 +43,7 @@ double RecoveryRate = 0.04;
 void Susceptible() {
     long nextSusceptible;
 
-    while( NowYear < END_YEAR ) {
+    while( NowYear < NumYears ) {
     	// compute a temporary next-value for this quantity
     	// based on the current state of the simulation:
     	nextSusceptible = CurrentSusceptible;
@@ -78,7 +79,7 @@ void Susceptible() {
 void Quarantined() {
     long nextQuarantined;
 
-    while( NowYear < END_YEAR ) {
+    while( NowYear < NumYears ) {
     	// compute a temporary next-value for this quantity
     	// based on the current state of the simulation:
     	nextQuarantined = CurrentQuarantined;
@@ -114,7 +115,7 @@ void Quarantined() {
 void Exposed() {
     long nextExposed;
 
-    while( NowYear < END_YEAR ) {
+    while( NowYear < NumYears ) {
     	// compute a temporary next-value for this quantity
     	// based on the current state of the simulation:
     	nextExposed = CurrentExposed;
@@ -150,7 +151,7 @@ void Exposed() {
 void Infected() {
     long nextInfected;
 	
-    while( NowYear < END_YEAR ) {
+    while( NowYear < NumYears ) {
         // compute a temporary next-value for this quantity
     	// based on the current state of the simulation:
     	nextInfected = CurrentInfected;
@@ -184,7 +185,7 @@ void Infected() {
 void Recovered() {
     long nextRecovered = CurrentRecovered;
 
-    while( NowYear < END_YEAR ) {
+    while( NowYear < NumYears ) {
 		// Compute a temporary next-value for the number of recovered individuals
         // based on the current number of infected individuals.
 
@@ -208,7 +209,7 @@ void Watcher() {
     int tempMonth;
     int tempYear;
 
-    while( NowYear < END_YEAR ) {
+    while( NowYear < NumYears ) {
 
 	// DoneComputing barrier:
 	#pragma omp barrier
@@ -219,8 +220,7 @@ void Watcher() {
 	// Print the current values for the simulation.
 #ifdef CSV
         // Calculate the current month number for graphing purposes.
-        int yearDiff = NowYear - START_YEAR;
-        int addMonths = 12*yearDiff;
+        int addMonths = 12*NowYear;
         int printMonth = NowMonth+addMonths;
 
         fprintf(stderr, "%2d, %ld, %ld, %ld, %ld, %ld\n",
@@ -238,16 +238,16 @@ void Watcher() {
 
 	// Compute a temporary next-value for this quantity
 	// based on the current state of the simulation:
-    tempYear = NowYear;
+	tempYear = NowYear;
 	tempMonth = NowMonth + 1;
 
 	if (tempMonth > 11) {
-        tempMonth = 0;
+	    tempMonth = 0;
 	    tempYear++;
-    }
+	}
 
-    // Store the new environment variables for the simulation.
-    NowMonth = tempMonth;
+        // Store the new environment variables for the simulation.
+	NowMonth = tempMonth;
 	NowYear = tempYear;
 
 	// DonePrinting barrier:

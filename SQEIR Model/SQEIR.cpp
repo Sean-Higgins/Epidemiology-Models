@@ -64,21 +64,32 @@ int main(int argc, char* argv[]) {
                 // get a segfault. 
                 if (str == nullptr) {
                     fprintf(stderr, "Error: No argument was provided for option flag \"%s\".\n", argv[--i]);
-                    fprintf(stderr, "Usage: %s [-s susceptible] [-i infected] [-b rate-of-infection] [-g rate-of-recovery]\n",
+                    fprintf(stderr, "Usage: %s [-s susceptible] [-q quarantined] [-e exposed] [-i infected] [-b rate-of-infection] [-g rate-of-recovery]\n",
                         argv[0]);
                     exit(EXIT_FAILURE);
  
                 }
                 
                 switch (c) {
+		    // Initial Population Values:
                     case 's':   // -s: Initial susceptible value. Value must be a
                                 // whole positive integer.
                         parseLong(&CurrentSusceptible, str);
                         break;
+		    case 'q':	// -q: Initial quarantined value. Value must be a
+				// whole positive integer.
+			parseLong(&CurrentQuarantined, str);
+			break;
+		    case 'e':	// -e: Initial exposed value. Value must be a whole
+				// positive integer.
+			parseLong(&CurrentExposed, str);
+			break;
                     case 'i':   // -i: Initial infected value. Value must be a whole
                                 // positive integer.
                         parseLong(&CurrentInfected, str);
                         break;
+
+		    // Initial rates.
                     case 'b':   // -b: Rate of infection (from susceptible to
                                 //      infected). Must be a non-negative value.
                         parseDouble(&InfectionRate, str);
@@ -87,11 +98,14 @@ int main(int argc, char* argv[]) {
                                 // Must be a non-negative value.
                         parseDouble(&RecoveryRate, str);
                         break;
+		    case 'y':	// -y: Years
+			parseInt(&NumYears, str);
+			break;
                     default:    // If the provided argument flag is invalid, print a
                                 // message explaining the flag is invalid. Then print
                                 // the usage message.
                         fprintf(stderr, "Error: The provided flag of \"%s\" is invalid.\n", argv[--i]);
-                        fprintf(stderr, "Usage: %s [-s susceptible] [-i infected] [-b rate-of-infection] [-g rate-of-recovery]\n",
+                        fprintf(stderr, "Usage: %s [-s susceptible] [-q quarantined] [-e exposed] [-i infected] [-b rate-of-infection] [-g rate-of-recovery]\n",
                                  argv[0]);
                         exit(EXIT_FAILURE);
                 }
