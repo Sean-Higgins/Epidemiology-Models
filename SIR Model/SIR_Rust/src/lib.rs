@@ -91,4 +91,25 @@ mod tests {
         // 500 + 500 = 1_000
         assert_eq!(1_000, recovered(infected, recovered, recovery_rate));
     }
+
+    #[test]
+    fn step_test() {
+        let susceptible = 100_000;
+        let infection_rate = 0.05;
+
+        let infected = 25_000;
+        let recovery_rate = 0.02;
+        let recovered = 500;
+        let month = 1;
+
+        // This should be split up amongst the 3 threads. This will be implemented later.
+        let next_susceptible = susceptible(susceptible, infection_rate);
+        let next_infected = infected(susceptible, infected, infection_rate, recovery_rate);
+        let next_recovered = recovered(infected, recovered, recovery_rate);
+        watcher(next_susceptible, next_infected, next_recovered, month);
+
+        assert_eq!(95_000, next_susceptible);
+        assert_eq!(29_500, next_infected);
+        assert_eq!(1_000, next_recovered);
+    }
 }
