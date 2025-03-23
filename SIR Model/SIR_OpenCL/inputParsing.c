@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <limits.h>
 
 // parseLong: This function serves as a wrapper for the function strtol(),
 //            ensuring that the provided character string str produces
@@ -34,19 +35,45 @@ void parseLong(long* long_val, char* str) {
     // numeric section of str, so if str == endptr, that means
     // there was never a numeric section to str!
     if (str == endptr) {
-        fprintf(stderr, "strtol: No digits provided for the long integer value.\n");
+        fprintf(stderr, "strtol: No digits provided for the initial value.\n");
         exit(EXIT_FAILURE);
     }
 
     // Finally, we need to make sure that the provided value is
     // not less than 0.
     if (*long_val < 0) {
-        fprintf(stderr, "strtol: The provided value of %ld is invalid\n", long_val);
+        fprintf(stderr, "strtol: The provided value of %ld is invalid\n", *long_val);
         exit(EXIT_FAILURE);
     }
     
     // If everything looks good however, we can store the
     // provided converted long into the provided long pointer.
+}
+
+// parseInt: This is a wrapper function for the parseLong function that includes
+//	     a check to make sure that the provided value will fit into an integer
+//	     value.
+//  Input:
+//	int* int_val: A pointer to the variable where we will store the converted
+//		      str value.
+//	char* str:    The string that holds the numeric data to convert to an
+//		      integer.
+void parseInt(int* int_val, char* str) {
+    
+    long temp = 0;  // A long integer to store the value that is converted from str.
+    
+    parseLong(&temp, str);
+
+    // Now check to see if the long value temp is within the maximum int value.
+    if (temp > INT_MAX) {
+	fprintf(stderr, "parseInt: The provided value of %ld is too large to store as an integer\n", temp);
+	exit(EXIT_FAILURE);
+    }
+
+    // If the temp value is smaller than INT_MAX, we can store it in the provided
+    // integer value.
+    *int_val = (int)temp;
+
 }
 
 // parseDouble: This function serves as a wrapper for the function strtod(),
@@ -76,14 +103,14 @@ void parseDouble(double* double_val, char* str) {
     // numeric section of str, so if str == endptr, that means
     // there was never a numeric section to str
     if (str == endptr) {
-        fprintf(stderr, "strtod: No digits provided for the double value.\n");
+        fprintf(stderr, "strtod: No digits provided for the value.\n");
         exit(EXIT_FAILURE);
     }
 
     // Finally, we need to make sure that the provided value is
     // not less than 0.
     if (*double_val < 0) {
-        fprintf(stderr, "strtod: The provided value of %f is invalid.\n", double_val);
+        fprintf(stderr, "strtod: The provided value of %f is invalid.\n", *double_val);
         exit(EXIT_FAILURE);
     }
 

@@ -22,6 +22,7 @@ int NumYears = NUM_YEARS;
 int NowMonth = 0;			// [0, 11]
 
 // Starting number of susceptible people, infected people, and recovered people.
+long TotalPopulation = 175000;
 long CurrentInfected = 10;
 long CurrentSusceptible = 175000;
 long CurrentRecovered = 0;
@@ -51,7 +52,7 @@ void Susceptible() {
         // IMPORTANT: While it is mathematically correct to find the change in
         //            the Susceptible population by multiplying
         //            CurrentSusceptible *
-    	nextSusceptible -= round(CurrentSusceptible * InfectionRate);
+    	nextSusceptible -= round(InfectionRate * ((CurrentSusceptible * CurrentInfected)/TotalPopulation));
 	
         // We can't have a negative population
     	if( nextSusceptible < 0 )
@@ -84,7 +85,7 @@ void Infected() {
 
     	// Add the new number of infected indivuduals and subtract
         // the number of recovered individuals.
-        nextInfected += round(CurrentSusceptible * InfectionRate);
+        nextInfected += round(InfectionRate * ((CurrentSusceptible * CurrentInfected)/TotalPopulation));
         nextInfected -= round(CurrentInfected * RecoveryRate);
 
     	// We still cannot have a negative population

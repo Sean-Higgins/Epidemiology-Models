@@ -119,20 +119,24 @@ int main(int argc, char* argv[]) {
     CurrentSusceptible -= CurrentInfected;
 
     // IMPORTANT: Before we begin our calculations, we need to print out the initial
-    // population values.
-#ifdef CSV
-    // Calculate the current month number for graphing purposes.
-    int yearDiff = NowYear - START_YEAR;
-    int addMonths = 12*yearDiff;
-    int printMonth = NowMonth+addMonths;
+    // population values of each of the groups, Susceptible, Quarantined, Exposed,
+    // Infected, and Recovered (SQEIR).
 
-    fprintf(stderr, "%2d, %ld, %ld, %ld\n", printMonth, CurrentSusceptible, CurrentInfected, CurrentRecovered);
+#ifdef CSV
+        // Calculate the current month number for graphing purposes.
+        int yearDiff = NowYear - START_YEAR;
+        int addMonths = 12*NowYear;
+        int printMonth = NowMonth+addMonths;
+
+        fprintf(stderr, "%2d, %ld, %ld, %ld, %ld, %ld\n",
+                printMonth, CurrentSusceptible, CurrentQuarantined, CurrentExposed, CurrentInfected, CurrentRecovered);
+
 #else
-    fprintf(stderr, "Year %4d, Month %2d - Susceptible: %6ld, Infected: %6ld, Recovered: %6ld\n",
-            NowYear, NowMonth+1, CurrentSusceptible, CurrentInfected, CurrentRecovered);
+        fprintf(stderr, "Year %4d, Month %2d - Susceptible: %6ld, Quarantiened: %6ld, Exposed: %6ld, Infected: %6ld, Recovered: %6ld\n",
+                NowYear, NowMonth+1, CurrentSusceptible, CurrentQuarantined, CurrentExposed, CurrentInfected, CurrentRecovered);
 #endif
 
-    // For debugging, print the total population as we go.
+    // For debugging, print the total population to ensure that no individual is lost in the calculations due to rounding.
 #ifdef DEBUG
     fprintf(stderr, "Total Population: %6ld\n",
             CurrentSusceptible + CurrentInfected + CurrentRecovered);

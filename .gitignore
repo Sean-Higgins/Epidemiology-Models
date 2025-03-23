@@ -7,3 +7,6 @@ strtol_ex.c
 # projects.
 */debug*
 */release*
+
+# Ignore the .vscode directory and its files in all of the project directories.
+*/.vscode

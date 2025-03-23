@@ -12,7 +12,7 @@ use SIR_Rust::*;
 
 fn main() {
     // Store the command-line arguments as an iterator to read each user-provided value.
-    let args = env::args();
+    let args: Args = env::args();
     for arg in args {
         println!("{arg}");
     }

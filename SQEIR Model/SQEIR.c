@@ -22,16 +22,19 @@ int NumYears = NUM_YEARS;
 int NowMonth = 0;			// [0, 11]
 
 // Starting populations for all of the groups in the model.
-long CurrentSusceptible = 175000;
-long CurrentQuarantined = 0;
+long TotalPopulation, CurrentSusceptible = 175000;
+long CurrentSusceptibleQuarantined = 0;
 long CurrentExposed = 100;
+long CurrentExposedQuarantined = 0;
 long CurrentInfected = 10;
 long CurrentRecovered = 0;
 
 // Transfer rates for the SQEIR model.
 // Rate of infection for COVID-19.
+// Mathematically represented by the Greek symbol beta.
 double InfectionRate = 0.4;
 // Rate of recovery for COVID-19.
+// Mathematically represented by the Greek symbol gamma.
 double RecoveryRate = 0.04;
 
 
@@ -49,10 +52,7 @@ void Susceptible() {
     	nextSusceptible = CurrentSusceptible;
 
     	// Subtract the number of new infections based on the current number
-        // of infected individuals.
-        // IMPORTANT: While it is mathematically correct to find the change in
-        //            the Susceptible population by multiplying
-        //            CurrentSusceptible *
+        // of infected and susceptible individuals.
     	nextSusceptible -= round(CurrentSusceptible * InfectionRate);
 	
         // We can't have a negative population

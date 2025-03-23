@@ -39,9 +39,9 @@ int EndYear = 2025;
 // Starting number of uninfected humans, active carriers of the
 // Vector Virus, Diclonius Queens and Silphalets.
 int CurrentHumans =     173000;
-int CurrentCarriers = 	10;
-int CurrentQueens = 	1;
-int CurrentSilphalets =	35;
+int CurrentCarriers = 	10;		// Khota, Yuuka, Mayu, etc.
+int CurrentQueens = 	1;		// Lucy
+int CurrentSilphalets =	35;		// Nana, Mariko, etc.
 
 // Transfer rates for the Diclonius population model.
 // 
@@ -232,7 +232,8 @@ int main(int argc, char* argv[]) {
         CurrentQueens = atoi(argv[3]);
         CurrentSilphalets = atoi(argv[4]);
     } else {
-        fprintf(stderr, "No command-line arguments provided for %s.\nRunning the program using default values:\n\
+        fprintf(stderr, "No command-line arguments provided for %s.\n\
+			Running the program using default values:\n\
             \tHumans = %d\n\
             \tCarriers = %d\n\
             \tQueens = %d\n\
