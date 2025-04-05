@@ -37,10 +37,17 @@ extern int NowDays;	    // [0, 364]
 extern int MaxDays;	    // The maximum number of days to run the simulation for.
 
 // Starting number of susceptible people, infected people, and recovered people.
+/*
 extern long TotalPopulation;
 extern long CurrentInfected;
 extern long CurrentSusceptible;
 extern long CurrentRecovered;
+*/
+
+extern double TotalPopulation;
+extern double CurrentInfected;
+extern double CurrentSusceptible;
+extern double CurrentRecovered;
 
 extern double InfectionRate;
 extern double RecoveryRate;

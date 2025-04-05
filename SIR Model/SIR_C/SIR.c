@@ -23,20 +23,27 @@ int NumYears = NUM_YEARS;
 int NowMonth = 0;			// [0, 11]
 */
 int NowDays = 0;			// [0, 364]
-int MaxDays = 365;			// The maximum number of days to run the simulation for.
+int MaxDays = 100;			// The maximum number of days to run the simulation for.
 
 // Starting number of susceptible people, infected people, and recovered people.
+/*
 long CurrentSusceptible = 174990;
 long CurrentInfected = 10;
 long CurrentRecovered = 0;
 
 long TotalPopulation = 175000;
+*/
+double CurrentSusceptible = 10000.0;
+double CurrentInfected = 10.0;
+double CurrentRecovered = 0.0;
+
+double TotalPopulation = 10010.0;
 
 // Transfer rates for the SIR model.
 // Rate of infection for the common cold.
-double InfectionRate = 0.4;
+double InfectionRate = 0.0001;
 // Rate of recovery for the common cold.
-double RecoveryRate = 0.04;
+double RecoveryRate = 0.1;
 
 
 /* Susceptible: This function is executed by a thread in parallel with the
@@ -45,7 +52,8 @@ double RecoveryRate = 0.04;
  *              as the Susceptible become Infected.
  */
 void Susceptible() {
-    long nextSusceptible;
+    //long nextSusceptible;
+	double nextSusceptible;
 
     while( NowDays < MaxDays ) {
     	// compute a temporary next-value for this quantity
@@ -57,7 +65,7 @@ void Susceptible() {
         // IMPORTANT: While it is mathematically correct to find the change in
         //            the Susceptible population by multiplying
         //            CurrentSusceptible *
-    	nextSusceptible -= round(InfectionRate * ((CurrentSusceptible * CurrentInfected)/TotalPopulation));
+    	nextSusceptible -= InfectionRate * CurrentSusceptible * CurrentInfected;
 	
         // We can't have a negative population
     	if( nextSusceptible < 0 )
@@ -81,7 +89,8 @@ void Susceptible() {
  *			 well as the number of infected individuals that have recovered.
  */
 void Infected() {
-    long nextInfected;
+    //long nextInfected;
+	double nextInfected;
 	
     while( NowDays < MaxDays ) {
         // compute a temporary next-value for this quantity
@@ -90,8 +99,8 @@ void Infected() {
 
     	// Add the new number of infected indivuduals and subtract
         // the number of recovered individuals.
-        nextInfected += round(InfectionRate * ((CurrentSusceptible * CurrentInfected)/TotalPopulation));
-        nextInfected -= round(CurrentInfected * RecoveryRate);
+        nextInfected += InfectionRate * CurrentSusceptible * CurrentInfected;
+        nextInfected -= CurrentInfected * RecoveryRate;
 
     	// We still cannot have a negative population
 	if (nextInfected < 0)
@@ -115,13 +124,14 @@ void Infected() {
  *			  of people who are currently infected.
  */
 void Recovered() {
-    long nextRecovered = CurrentRecovered;
+    //long nextRecovered;
+	double nextRecovered;
 
     while( NowDays < MaxDays ) {
 		// Compute a temporary next-value for the number of recovered individuals
         // based on the current number of infected individuals.
 
-    	nextRecovered += round(CurrentInfected * RecoveryRate);
+    	nextRecovered += CurrentInfected * RecoveryRate;
 		
     	// DoneComputing barrier: Save the calculated variables to the
     	// global variables.
@@ -155,16 +165,16 @@ void Watcher() {
         //int addMonths = 12*NowYear;
         //int printMonth = NowMonth+addMonths;
 
-        fprintf(stderr, "%2d, %ld, %ld, %ld\n",
+        fprintf(stderr, "%4d, %7.1f, %7.1f, %7.1f\n",
                 NowDays, CurrentSusceptible, CurrentInfected, CurrentRecovered);
 
 #else
-        fprintf(stderr, "Day %d - Susceptible: %6ld, Infected: %6ld, Recovered: %6ld\n",
+        fprintf(stderr, "Day %4d - Susceptible: %7.1f, Infected: %7.1f, Recovered: %7.1f\n",
                 NowDays+1, CurrentSusceptible, CurrentInfected, CurrentRecovered);
 #endif
 
 #ifdef DEBUG
-        fprintf(stderr, "Total Population: %6ld\n",
+        fprintf(stderr, "Total Population: %7.1f\n",
                 CurrentSusceptible + CurrentInfected + CurrentRecovered);
 #endif
 

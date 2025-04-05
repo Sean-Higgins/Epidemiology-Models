@@ -58,20 +58,26 @@ int main(int argc, char* argv[]) {
                 }
                 
                 switch (c) {
-                    case 's':   // -s: Initial susceptible value. Value must be a
-                                // whole positive integer.
-                        parseLong(&CurrentSusceptible, str);
+                    case 's':   
+                        // -s: Initial susceptible value. Value must be a
+                        // whole positive integer.
+                        //parseLong(&CurrentSusceptible, str);
+                        parseDouble(&CurrentSusceptible, str);
                         break;
-                    case 'i':   // -i: Initial infected value. Value must be a whole
-                                // positive integer.
-                        parseLong(&CurrentInfected, str);
+                    case 'i':
+                        // -i: Initial infected value. Value must be a whole
+                        // positive integer.
+                        //parseLong(&CurrentInfected, str);
+                        parseDouble(&CurrentInfected, str);
                         break;
-                    case 'b':   // -b: Rate of infection (from susceptible to
-                                //      infected). Must be a non-negative value.
+                    case 'b':
+                        // -b: Rate of infection (from susceptible to
+                        //      infected). Must be a non-negative value.
                         parseDouble(&InfectionRate, str);
                         break;
-                    case 'g':   // -g: Rate of recovery (from infected to recovered).
-                                // Must be a non-negative value.
+                    case 'g':
+                        // -g: Rate of recovery (from infected to recovered).
+                        // Must be a non-negative value.
                         parseDouble(&RecoveryRate, str);
                         break;
                     case 'd':	// -y: Number of years to run the simulation.
@@ -102,16 +108,16 @@ int main(int argc, char* argv[]) {
     //int addMonths = 12*NowYear;
     //int printMonth = NowMonth+addMonths;
 
-    fprintf(stderr, "%2d, %ld, %ld, %ld\n", NowDays, CurrentSusceptible, CurrentInfected, CurrentRecovered);
+    fprintf(stderr, "%4d, %7.1f, %7.1f, %7.1f\n", NowDays, CurrentSusceptible, CurrentInfected, CurrentRecovered);
 #else
-    fprintf(stderr, "Day %2d - Susceptible: %6ld, Infected: %6ld, Recovered: %6ld\n",
+    fprintf(stderr, "Day %4d - Susceptible: %7.1f, Infected: %7.1f, Recovered: %7.1f\n",
             NowDays+1, CurrentSusceptible, CurrentInfected, CurrentRecovered);
 #endif
 
     // For debugging, print the total population as we go to make sure no individuals
     // are lost or gained due to rounding errors.
 #ifdef DEBUG
-    fprintf(stderr, "Total Population: %6ld\n",
+    fprintf(stderr, "Total Population: %7.1f\n",
             CurrentSusceptible + CurrentInfected + CurrentRecovered);
 #endif
 
