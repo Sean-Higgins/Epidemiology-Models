@@ -28,12 +28,16 @@
 
 
 // Year and month for the simulation to keep track of.
+/*
 extern int NowYear;	    // [0, NumYears]
 extern int NumYears;
 extern int NowMonth;	    // [0, 11]
-
+*/
+extern int NowDays;	    // [0, 364]
+extern int MaxDays;	    // The maximum number of days to run the simulation for.
 
 // Starting number of susceptible people, infected people, and recovered people.
+extern long TotalPopulation;
 extern long CurrentInfected;
 extern long CurrentSusceptible;
 extern long CurrentRecovered;

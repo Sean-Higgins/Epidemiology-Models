@@ -17,15 +17,20 @@
 // Thus, they are declared here, but they are not initialized.
 
 // Year and month for the simulation to keep track of.
+/*
 int NowYear = 0;			// [0, Num_Years]
 int NumYears = NUM_YEARS;
 int NowMonth = 0;			// [0, 11]
+*/
+int NowDays = 0;			// [0, 364]
+int MaxDays = 365;			// The maximum number of days to run the simulation for.
 
 // Starting number of susceptible people, infected people, and recovered people.
-long TotalPopulation = 175000;
+long CurrentSusceptible = 174990;
 long CurrentInfected = 10;
-long CurrentSusceptible = 175000;
 long CurrentRecovered = 0;
+
+long TotalPopulation = 175000;
 
 // Transfer rates for the SIR model.
 // Rate of infection for the common cold.
@@ -42,7 +47,7 @@ double RecoveryRate = 0.04;
 void Susceptible() {
     long nextSusceptible;
 
-    while( NowYear < NumYears ) {
+    while( NowDays < MaxDays ) {
     	// compute a temporary next-value for this quantity
     	// based on the current state of the simulation:
     	nextSusceptible = CurrentSusceptible;
@@ -78,7 +83,7 @@ void Susceptible() {
 void Infected() {
     long nextInfected;
 	
-    while( NowYear < NumYears ) {
+    while( NowDays < MaxDays ) {
         // compute a temporary next-value for this quantity
     	// based on the current state of the simulation:
     	nextInfected = CurrentInfected;
@@ -112,8 +117,8 @@ void Infected() {
 void Recovered() {
     long nextRecovered = CurrentRecovered;
 
-    while( NowYear < NumYears ) {
-	// Compute a temporary next-value for the number of recovered individuals
+    while( NowDays < MaxDays ) {
+		// Compute a temporary next-value for the number of recovered individuals
         // based on the current number of infected individuals.
 
     	nextRecovered += round(CurrentInfected * RecoveryRate);
@@ -136,7 +141,7 @@ void Watcher() {
     int tempMonth;
     int tempYear;
 
-    while( NowYear < NumYears ) {
+    while( NowDays < MaxDays ) {
 
 	// DoneComputing barrier:
 	#pragma omp barrier
@@ -147,35 +152,40 @@ void Watcher() {
 	// Print the current values for the simulation.
 #ifdef CSV
         // Calculate the current month number for graphing purposes.
-        int addMonths = 12*NowYear;
-        int printMonth = NowMonth+addMonths;
+        //int addMonths = 12*NowYear;
+        //int printMonth = NowMonth+addMonths;
 
         fprintf(stderr, "%2d, %ld, %ld, %ld\n",
-                printMonth, CurrentSusceptible, CurrentInfected, CurrentRecovered);
+                NowDays, CurrentSusceptible, CurrentInfected, CurrentRecovered);
 
 #else
-        fprintf(stderr, "Year %4d, Month %2d - Susceptible: %6ld, Infected: %6ld, Recovered: %6ld\n",
-                NowYear, NowMonth+1, CurrentSusceptible, CurrentInfected, CurrentRecovered);
+        fprintf(stderr, "Day %d - Susceptible: %6ld, Infected: %6ld, Recovered: %6ld\n",
+                NowDays+1, CurrentSusceptible, CurrentInfected, CurrentRecovered);
 #endif
 
 #ifdef DEBUG
-        fprintf(stderr, "Total Population: %6d\n",
+        fprintf(stderr, "Total Population: %6ld\n",
                 CurrentSusceptible + CurrentInfected + CurrentRecovered);
 #endif
 
-	// Compute a temporary next-value for this quantity
-	// based on the current state of the simulation:
-        tempYear = NowYear;
-	tempMonth = NowMonth + 1;
+		// Compute a temporary next-value for this quantity
+		// based on the current state of the simulation:
+		/*
+		tempYear = NowYear;
+		tempMonth = NowMonth + 1;
 
-	if (tempMonth > 11) {
-            tempMonth = 0;
-	    tempYear++;
-        }
+		if (tempMonth > 11) {
+			tempMonth = 0;
+			tempYear++;
+		}
+		*/
 
-        // Store the new environment variables for the simulation.
-        NowMonth = tempMonth;
-	NowYear = tempYear;
+		// Store the new environment variables for the simulation.
+		//NowMonth = tempMonth;
+		//NowYear = tempYear;
+
+		// Move the calculation to the next day.
+		NowDays++;
 
 	// DonePrinting barrier:
 	#pragma omp barrier
