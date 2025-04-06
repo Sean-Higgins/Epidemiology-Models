@@ -99,7 +99,6 @@ int main(int argc, char* argv[]) {
     // Once the user-provided values have been parsed (if they were
     // provided), we need to add the number of infected to the
     // number of susceptible to get the total population.
-    TotalPopulation = CurrentSusceptible + CurrentInfected;
 
     // IMPORTANT: Before we begin our calculations, we need to print out the initial
     // population values.
