@@ -61,14 +61,14 @@ int main(int argc, char* argv[]) {
                     case 's':   
                         // -s: Initial susceptible value. Value must be a
                         // whole positive integer.
-                        //parseLong(&CurrentSusceptible, str);
-                        parseDouble(&CurrentSusceptible, str);
+                        parseLong(&CurrentSusceptible, str);
+                        //parseDouble(&CurrentSusceptible, str);
                         break;
                     case 'i':
                         // -i: Initial infected value. Value must be a whole
                         // positive integer.
-                        //parseLong(&CurrentInfected, str);
-                        parseDouble(&CurrentInfected, str);
+                        parseLong(&CurrentInfected, str);
+                        //parseDouble(&CurrentInfected, str);
                         break;
                     case 'b':
                         // -b: Rate of infection (from susceptible to
@@ -107,16 +107,16 @@ int main(int argc, char* argv[]) {
     //int addMonths = 12*NowYear;
     //int printMonth = NowMonth+addMonths;
 
-    fprintf(stderr, "%4d, %7.1f, %7.1f, %7.1f\n", NowDays, CurrentSusceptible, CurrentInfected, CurrentRecovered);
+    fprintf(stderr, "%4d, %6ld, %6ld, %6ld\n", NowDays, CurrentSusceptible, CurrentInfected, CurrentRecovered);
 #else
-    fprintf(stderr, "Day %4d - Susceptible: %7.1f, Infected: %7.1f, Recovered: %7.1f\n",
+    fprintf(stderr, "Day %4d - Susceptible: %6ld, Infected: %6ld, Recovered: %6ld\n",
             NowDays+1, CurrentSusceptible, CurrentInfected, CurrentRecovered);
 #endif
 
     // For debugging, print the total population as we go to make sure no individuals
     // are lost or gained due to rounding errors.
 #ifdef DEBUG
-    fprintf(stderr, "Total Population: %7.1f\n",
+    fprintf(stderr, "Total Population: %6ld\n",
             CurrentSusceptible + CurrentInfected + CurrentRecovered);
 #endif
 
