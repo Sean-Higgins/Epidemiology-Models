@@ -103,8 +103,8 @@ void Infected() {
         nextInfected -= CurrentInfected * RecoveryRate;
 
     	// We still cannot have a negative population
-	if (nextInfected < 0)
-            nextInfected = 0;
+		if (nextInfected < 0)
+				nextInfected = 0;
 
     	// DoneComputing barrier:
     	#pragma omp barrier
@@ -132,6 +132,10 @@ void Recovered() {
         // based on the current number of infected individuals.
 
     	nextRecovered += CurrentInfected * RecoveryRate;
+
+		// We still cannot have a negative population
+		if (nextRecovered < 0)
+			nextRecovered = 0;
 		
     	// DoneComputing barrier: Save the calculated variables to the
     	// global variables.

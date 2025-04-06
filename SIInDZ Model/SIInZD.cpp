@@ -24,7 +24,7 @@
 #include <math.h>
 #include <omp.h>
 
-#include "zombieSIInZD.h"
+#include "SIInZD.h"
 
 
 // The main loop of the program.
