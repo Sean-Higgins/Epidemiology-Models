@@ -12,7 +12,7 @@ use SIR_Rust::*;
 
 fn main() {
     // Store the command-line arguments as an iterator to read each user-provided value.
-    let args: Args = env::args();
+    let args = env::args();
     for arg in args {
         println!("{arg}");
     }
@@ -21,10 +21,10 @@ fn main() {
     // IMPORTANT: We also need to handle error cases where a user
     // forgets to enter a value (e.g., ./influenzaOutbreak -s)
     // This leaves argv[argc-1] as the flag, and the final argv[argc] as NULL.
-    if args.len() > 1 {
-        
-    }
+    //if args.len() > 1 {
+    //    
+    //}
 
     // Run the simulation for however many months the user wants.
-    let mut max_months = 
+    //let mut max_months = 
 }
