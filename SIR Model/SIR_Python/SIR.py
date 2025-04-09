@@ -10,6 +10,7 @@
 
 import threading
 import argparse
+import matplotlib.pyplot as plt
 
 # Create a barrier for synchronization between our threads
 barrier = threading.Barrier(4)  # 4 threads: susceptible, infected, recovered, watcher
@@ -110,11 +111,19 @@ def recovered():
         # Wait for the other threads to finish before proceeding
         barrier.wait()
 
-def watcher(csvflag, csvfilename):
+def watcher(csvflag, csvfilename, plotFlag):
     # This function will be used to watch the simulation and print the current state of the simulation.
     # Since this function isn't changing any of the other variables, we don't need to use the global keyword for them.
     # However, this function will be updating the now_days variable, so we need to use the global keyword for it.
     global now_days
+
+    # If the plot flag is set, we want to create the lists for plotting the data.
+    # Since these lists are initially defined as global variables, we need to use the global keyword for them.
+    if plotFlag:
+        global days
+        global susceptible_data
+        global infected_data
+        global recovered_data
 
     if csvflag:
         # Open the CSV file for writing. IMPORTANT: This file must be opened in append mode so that we do not overwrite
@@ -140,6 +149,12 @@ def watcher(csvflag, csvfilename):
             # Write the current state to the CSV file
             csvfile.write(f"{now_days+1},{current_susceptible:8.0f},{current_infected:8.0f},{current_recovered:8.0f}\n")
 
+        if plotFlag:
+            # Append the current state to the lists for plotting
+            days.append(now_days+1)
+            susceptible_data.append(current_susceptible)
+            infected_data.append(current_infected)
+            recovered_data.append(current_recovered)
         now_days += 1
 
         # Done printing barrier
@@ -194,7 +209,25 @@ def main():
     watcher_args.append(csvflag)
     watcher_args.append(csvfilename)
 
-
+    # Check to see if the plot flag is set. If it is, we want to set a binary flag to true
+    # to indicate that we want to plot the results via matplotlib.
+    plotFlag = False
+    if args.plot:
+        plotFlag = True
+        # Create lists to store the data for plotting. These lists will be updated in the watcher thread
+        # as it already has access to the most up to date data for each of these variables.
+        global days
+        days = []
+        global susceptible_data
+        susceptible_data = []
+        global infected_data
+        infected_data = []
+        global recovered_data
+        recovered_data = []
+        
+    # Add the plot flag to the watcher arguments
+    # This is done so that the watcher thread can check if it needs to store the results or not.
+    watcher_args.append(plotFlag)
 
     # Print the initial state of the simulation
     print(f"Day: {now_days+1:3d}, Susceptible: {current_susceptible:8.0f}, Infected: {current_infected:8.0f}, Recovered: {current_recovered:8.0f}")
@@ -230,6 +263,25 @@ def main():
 
     # DEBUG: Print the final state of the simulation
     #print(f"Final state after {max_days:3d} days:\nSusceptible: {current_susceptible:8.0f}, Infected: {current_infected:8.0f}, Recovered: {current_recovered:8.0f}")
+    
+    # If the plot flag is set, we want to plot the results using matplotlib
+    if plotFlag:
+        # Create the plot and set the labels
+        plt.ion()
+        plt.figure(figsize=(10, 6))
+        plt.title('SIR Model Simulation with beta = {:.4f}, gamma = {:.4f}'.format(beta, gamma))
+        plt.xlabel('Days')
+        plt.ylabel('Population')
+        plt.xlim(0, max_days)
+        plt.ylim(0, max(current_susceptible, current_infected, current_recovered) * 1.1)
+        plt.grid()
+        # Plot the data
+        plt.plot(days, susceptible_data, 'b-', label='Susceptible')
+        plt.plot(days, infected_data, 'r-', label='Infected')
+        plt.plot(days, recovered_data, 'g-', label='Recovered')
+        plt.legend(loc='center right')
+        input("Press Enter to close the plot...")
+
 
 if __name__ == "__main__":
     main()
