@@ -110,11 +110,17 @@ def recovered():
         # Wait for the other threads to finish before proceeding
         barrier.wait()
 
-def watcher():
+def watcher(csvflag, csvfilename):
     # This function will be used to watch the simulation and print the current state of the simulation.
     # Since this function isn't changing any of the other variables, we don't need to use the global keyword for them.
     # However, this function will be updating the now_days variable, so we need to use the global keyword for it.
     global now_days
+
+    if csvflag:
+        # Open the CSV file for writing. IMPORTANT: This file must be opened in append mode so that we do not overwrite
+        # the file each time we write to it. This is because the watcher thread will be writing to the file
+        # after the main thread has finished writing the collum data to it.
+        csvfile = open(csvfilename, 'a')
 
     while now_days < max_days:
 
@@ -128,6 +134,12 @@ def watcher():
 
         # Print the current state of the simulation
         print(f"Day: {now_days+1:3d}, Susceptible: {current_susceptible:8.0f}, Infected: {current_infected:8.0f}, Recovered: {current_recovered:8.0f}")
+
+        # If the csv flag is set, write the current state to the CSV file that is provided
+        if csvflag:
+            # Write the current state to the CSV file
+            csvfile.write(f"{now_days+1},{current_susceptible:8.0f},{current_infected:8.0f},{current_recovered:8.0f}\n")
+
         now_days += 1
 
         # Done printing barrier
@@ -155,6 +167,8 @@ def main():
     parser.add_argument('--recovered', type=int, default=0, help='Initial number of recovered individuals')
     parser.add_argument('--beta', type=float, default=0.0001, help='Infection rate')
     parser.add_argument('--gamma', type=float, default=0.1, help='Recovery rate')
+    parser.add_argument('--csv', type=str, help='Output results to CSV file')
+    parser.add_argument('--plot', action='store_true', help='Plot results')
     args = parser.parse_args()
 
     # Initialize the population and parameters
@@ -167,9 +181,35 @@ def main():
     beta = args.beta  # Infection rate (beta)
     gamma = args.gamma  # Recovery rate (gamma)
 
+    # Check if the csv flag is set. If it is, we want to set a binary flag to true
+    # to indicate that we want to output the results to a CSV file.
+    watcher_args = []
+    if args.csv:
+        csvflag = True
+        csvfilename = args.csv  # Store the csv filename for later use
+    else:
+        csvflag = False
+        csvfilename = None
+
+    watcher_args.append(csvflag)
+    watcher_args.append(csvfilename)
+
+
+
     # Print the initial state of the simulation
     print(f"Day: {now_days+1:3d}, Susceptible: {current_susceptible:8.0f}, Infected: {current_infected:8.0f}, Recovered: {current_recovered:8.0f}")
 
+    # Check if the csv flag is set
+    if csvflag:
+        # Open the CSV file for writing
+        with open(csvfilename, 'w') as csvfile:
+            # Write the header row
+            csvfile.write('Day,Susceptible,Infected,Recovered\n')
+            # Write the initial state
+            csvfile.write(f"{now_days+1},{current_susceptible:8.0f},{current_infected:8.0f},{current_recovered:8.0f}\n")
+            # Close the file so that it can be opened and used by the watcher thread
+            csvfile.close()
+    
     # Increment to the next day for our calculations
     now_days += 1
 
@@ -178,7 +218,7 @@ def main():
     threads.append(threading.Thread(target=susceptible))
     threads.append(threading.Thread(target=infected))
     threads.append(threading.Thread(target=recovered))
-    threads.append(threading.Thread(target=watcher))
+    threads.append(threading.Thread(target=watcher, args=(watcher_args)))
 
     # With the threads created, we can start them
     for thread in threads:
@@ -188,8 +228,8 @@ def main():
     for thread in threads:
         thread.join()
 
-    # Print the final state of the simulation
-    print(f"Final state after {max_days:3d} days:\nSusceptible: {current_susceptible:8.0f}, Infected: {current_infected:8.0f}, Recovered: {current_recovered:8.0f}")
+    # DEBUG: Print the final state of the simulation
+    #print(f"Final state after {max_days:3d} days:\nSusceptible: {current_susceptible:8.0f}, Infected: {current_infected:8.0f}, Recovered: {current_recovered:8.0f}")
 
 if __name__ == "__main__":
     main()
