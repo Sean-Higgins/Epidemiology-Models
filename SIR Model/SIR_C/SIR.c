@@ -149,9 +149,6 @@ void Recovered() {
 
 // Watcher: This function adjusts the global variables for the program.
 void Watcher() {
-    int tempMonth;
-    int tempYear;
-
     while( NowDays < MaxDays ) {
 
 	// DoneComputing barrier:
